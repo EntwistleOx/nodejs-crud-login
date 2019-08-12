@@ -1,9 +1,13 @@
+//Requires
 const express = require('express');
-const app = express();
 const path = require('path');
 const handlebars = require('express-handlebars');
 const method = require('method-override');
 const session = require('express-session');
+
+//Initializations
+const app = express();
+require('./database');
 
 //Settings
 app.set('port', process.env.PORT || 3000);
