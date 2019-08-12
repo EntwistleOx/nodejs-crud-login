@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/User');
 
 router.get('/users/signin', (req, res) => {
     res.render('users/signin');
@@ -9,7 +10,7 @@ router.get('/users/signup', (req, res) => {
     res.render('users/signup');
 });
 
-router.post('/users/store', (req, res) => {
+router.post('/users/store', async (req, res) => {
     const {name, email, password, confirm_password} = req.body;
     const errors = [];
     if(!name) {
@@ -30,8 +31,22 @@ router.post('/users/store', (req, res) => {
             name,
             email
         });
+    }else{
+        const userEmail = await User.findOne({email: email});
+        if(userEmail) {
+            req.flash('errorMsg','Email is already in use!');
+            res.redirect('/users/signup')
+        }
+        const newUser = new User({
+            name,
+            email,
+            password
+        });
+        newUser.password = await newUser.encryptPassword(password);
+        await newUser.save();
+        req.flash('successMsg', 'User Registered!');
+        res.redirect('/users/signin');
     }
-    res.send('ok');
 })
 
 module.exports = router;
