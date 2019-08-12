@@ -34,6 +34,20 @@ router.get('/notes', async (req, res) => {
     res.render('notes/index', { notes });
 });
 
-router.get('/notes/edit')
+router.get('/notes/edit/:id', async (req, res) => {
+    const note = await Note.findById(req.params.id);
+    res.render('notes/edit', {note});
+});
+
+router.patch('/notes/update/:id', async (req, res) => {
+    const {title, description} = req.body;
+    await Note.findByIdAndUpdate(req.params.id, {title, description});
+    res.redirect('/notes');
+});
+
+router.delete('/notes/delete/:id', async (req, res) => {
+    await Note.findByIdAndDelete(req.params.id);
+    res.redirect('/notes');
+});
 
 module.exports = router;
