@@ -20,7 +20,7 @@ app.set('view engine', '.hbs');
 app.use(express.urlencoded({extended:false}));
 app.use(method('_method'));
 app.use(session({
-    secret: myApp,
+    secret: 'myApp',
     resave: true,
     saveUninitialized: true
 }));
@@ -28,8 +28,12 @@ app.use(session({
 //Global Vars
 
 //Routes
+app.use(require('./routes/index'));
+app.use(require('./routes/users'));
+app.use(require('./routes/notes'));
 
 //Static Files
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Server is listening
 app.listen(app.get('port'), () => {
